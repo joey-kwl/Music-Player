@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mm = require('music-metadata');
-const decode = require('audio-decode');
 
 const app = express();
 const publicPath = path.join(__dirname, '../public');
