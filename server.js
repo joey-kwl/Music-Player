@@ -16,20 +16,19 @@ app.get('/', (req, res) => {
 });
 
 app.post('/music', (req, res) => {
-	decode(req.body.test, (err, audioBuffer) => {
-		let filebuffer = new Buffer.from(req.body.test, 'base64');
-		
-		mm.parseBuffer(filebuffer, 'audio/mpeg')
-		.then( metadata => {
-			if (metadata.common.artist != undefined && metadata.common.title != undefined) {
-				console.log(metadata.common.artist);
-				console.log(metadata.common.title);
+	let filebuffer = new Buffer.from(req.body.test, 'base64');
+	
+	mm.parseBuffer(filebuffer, 'audio/mpeg')
+	.then( metadata => {
+		console.log(metadata);
+		if (metadata.common.artist != undefined && metadata.common.title != undefined) {
+			console.log(metadata.common.artist);
+			console.log(metadata.common.title);
 
-				res.send(JSON.stringify({artist: metadata.common.artist, title: metadata.common.title, code: 200}));
-			} else {
-				res.send(JSON.stringify({code: 503}));
-			}
-		});
+			res.send(JSON.stringify({artist: metadata.common.artist, title: metadata.common.title, code: 200}));
+		} else {
+			res.send(JSON.stringify({code: 503}));
+		}
 	});
 })
 
