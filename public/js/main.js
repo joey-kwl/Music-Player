@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const audioInput = document.getElementById('audioInput');
 	const audio = document.getElementById('aud');
-	audio.volume = 0.1;
+	audio.volume = 0.05;
 
 	audio.addEventListener('ended', playRandomSong);
 	document.getElementById('next').addEventListener('click', playRandomSong);
@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	let audios = [];
+	let doneSong = {};
 	
 	audioPromise.then(files => {
 		for(const x in files) {
@@ -46,12 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify({"test": e.target.result})
+				body: JSON.stringify({"audio": e.target.result})
 			}).then(response => {
 				return response.json();
-			}).then(data => {
-				console.log(data);
-				
+			}).then(data => {				
 				if (data.code == 200) {
 					songDetails.title = data.title;
 					songDetails.artist = data.artist;
@@ -61,15 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
 					songDetails.artist = '';
 					navigator.mediaSession.metadata = new MediaMetadata(songDetails);
 				}
+
+				doneSong = {"artist": data.artist, "title": data.title}
+				currentDuration()
+			})
+			.catch(err => {
+				console.log(err)
 			})
 		}
-
-
 	}
 	
 	function playRandomSong() {
 		const random = Math.floor(Math.random() * audios.length);
-
+		
 		playMusic(audios[random]);
 	}
 
@@ -80,4 +83,33 @@ document.addEventListener('DOMContentLoaded', () => {
 	function resumeMusic(){
 		audio.play();
 	}
+
+	function currentDuration() {
+		let scrobble = false;
+		audio.addEventListener('timeupdate', (e) => {
+			if(!scrobble) {
+				if (audio.currentTime > (audio.duration / 2)) {
+					scrobble = true;
+					console.log(doneSong);
+
+
+					fetch('/scrobble', {
+						method: 'post',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(doneSong)
+					}).then(response => {
+						return response.json();
+					}).then(data => {
+						console.log('scrobbled');
+					}).catch(err => {
+						console.log(err)
+					})
+
+				}
+			}
+		})
+	}
+
 })
