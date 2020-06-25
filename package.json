@@ -18,6 +18,7 @@
     "md5": "^2.2.1",
     "music-metadata": "^6.4.0",
     "node-id3": "^0.1.17",
-    "scribble": "0.0.5"
+    "scribble": "0.0.5",
+    "xml2js": "^0.4.23"
   }
 }

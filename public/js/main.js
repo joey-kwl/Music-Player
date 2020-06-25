@@ -1,3 +1,11 @@
+function shuffle(arr) {
+	for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 	let songDetails = {};
 
@@ -23,8 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	let audios = [];
-	let doneSong = {};
-	
+	let currentSong = {};
+	let hasScrobbled = false;
+
 	audioPromise.then(files => {
 		for(const x in files) {
 			if (files[x].type != 'image/jpeg' && files[x].type != 'application/vnd.ms-wpl' && files[x].type != undefined) {
@@ -32,10 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 
+		audios = shuffle(audios)
+
 		playRandomSong();
 	});
 
 	function playMusic(src) {
+
 		const filereader = new FileReader();
 		filereader.readAsDataURL(src);
 
@@ -60,20 +72,25 @@ document.addEventListener('DOMContentLoaded', () => {
 					songDetails.artist = '';
 					navigator.mediaSession.metadata = new MediaMetadata(songDetails);
 				}
-
-				doneSong = {"artist": data.artist, "title": data.title}
-				currentDuration()
+				
+				currentSong = {"artist": data.artist, "title": data.title}				
 			})
 			.catch(err => {
 				console.log(err)
 			})
 		}
+
 	}
 	
+	
 	function playRandomSong() {
+		hasScrobbled = false;
+
 		const random = Math.floor(Math.random() * audios.length);
-		
-		playMusic(audios[random]);
+		setInterval(() => {
+			scrobbles();
+		}, 1000);
+		playMusic(audios[random])
 	}
 
 	function pauseMusic(){
@@ -84,32 +101,31 @@ document.addEventListener('DOMContentLoaded', () => {
 		audio.play();
 	}
 
-	function currentDuration() {
-		let scrobble = false;
-		audio.addEventListener('timeupdate', (e) => {
-			if(!scrobble) {
-				if (audio.currentTime > (audio.duration / 2)) {
-					scrobble = true;
-					console.log(doneSong);
+	function scrobbles() {
+		if(!hasScrobbled) {
+			if (audio.currentTime > (audio.duration / 2)) {
+				hasScrobbled = true;
+				console.log(`Scrobbling: ${currentSong.artist} - ${currentSong.title}`)
 
+				fetch('/scrobble', {
+					method: 'post',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(currentSong)
+				}).then(response => {
+					return response.json();
+				}).then(data => {
+					if (data.status == 200) {
+						console.log(`Scrobbled: ${currentSong.artist} - ${currentSong.title}`);
+					}
+				}).catch(err => {
+					console.log(err)
+				})
 
-					fetch('/scrobble', {
-						method: 'post',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(doneSong)
-					}).then(response => {
-						return response.json();
-					}).then(data => {
-						console.log('scrobbled');
-					}).catch(err => {
-						console.log(err)
-					})
-
-				}
 			}
-		})
+		}
+		
 	}
 
 })

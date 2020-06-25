@@ -5,6 +5,7 @@ const mm = require('music-metadata');
 const NodeID3 = require('node-id3');
 const scribble = require('scribble');
 const env = require('dotenv').config();
+const parseString = require('xml2js').parseString;
 
 const app = express();
 const publicPath = path.join(__dirname, '../public');
@@ -44,12 +45,24 @@ app.post('/music', (req, res) => {
 })
 
 app.post('/scrobble', (req, res) => {
-	var song = {
+	let song = {
 		artist: req.body.artist,
 		track: req.body.title,
 	};
 
-	// Scrobbler.Scrobble(song, function(post_return_data) {console.log(post_return_data)});
+	Scrobbler.Scrobble(song, xml => {
+		parseString(xml, function (err, result) {
+			if (result.lfm.$.status == 'ok') {
+				console.log(`Scrobbled: ${song.artist} - ${song.track}`)
+				res.send(JSON.stringify({status: 200}));
+			} else {
+				console.log('Failed to scrobble')
+				res.send(JSON.stringify({status: 503}))
+			}
+		});
+			
+	});
+
 })
 
 
