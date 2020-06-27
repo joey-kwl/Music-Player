@@ -82,15 +82,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	}
 	
-	
 	function playRandomSong() {
-		hasScrobbled = false;
-
 		const random = Math.floor(Math.random() * audios.length);
-		setInterval(() => {
-			scrobbles();
-		}, 1000);
+		if (!hasScrobbled) {
+			setInterval(() => {
+				scrobbles();
+			}, 1000);
+		}
 		playMusic(audios[random])
+		setTimeout(() => {
+			hasScrobbled = false;
+		}, 1000);
+
 	}
 
 	function pauseMusic(){
