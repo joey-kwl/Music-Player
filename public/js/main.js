@@ -120,6 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					return response.json();
 				}).then(data => {
 					if (data.status == 200) {
+						songLogger();
 						console.log(`Scrobbled: ${currentSong.artist} - ${currentSong.title}`);
 					}
 				}).catch(err => {
@@ -129,6 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 		
+	}
+
+	function songLogger() {
+		const date = new Date();
+		const logs = document.querySelector('.logs');
+		const div = document.createElement('div');
+		const artist = document.createElement('div')
+		
+		div.classList.add('log');
+		artist.innerHTML = `${date.getHours()}:${date.getMinutes()} | Scrobbled: ${currentSong.artist} - ${currentSong.title}`
+		
+		div.appendChild(artist);
+		logs.appendChild(div);
+		
+		logs.scrollTop = logs.scrollHeight - logs.clientHeight;
 	}
 
 })

@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
-	<script src="/js/main.js"></script>
+	<script src="js/main.js"></script>
+	<link href="css/main.css" rel="stylesheet" type="text/css">
 
 	<link rel="icon" type="image/png" sizes="192x192"  href="/img/icons/android-icon-192x192.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32x32.png">
@@ -13,9 +14,12 @@
 	<link rel="manifest" href="/img/icons/manifest.json">
 </head>
 <body>
-	<input id="audioInput" type="file" webkitdirectory mozdirectory />
-	<audio controls id="aud" autoplay></audio>
-
-	<button id="next">Next</button>
+	<div>
+		<input id="audioInput" type="file" webkitdirectory mozdirectory />
+		<audio controls id="aud" autoplay></audio>
+	
+		<button id="next">Next</button>
+	</div>
+	<div class="logs"></div>
 </body>
 </html>
