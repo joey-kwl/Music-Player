@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 	<script src="js/main.js"></script>
 	<link href="css/main.css" rel="stylesheet" type="text/css">
 
@@ -14,12 +15,58 @@
 	<link rel="manifest" href="/img/icons/manifest.json">
 </head>
 <body>
-	<div>
-		<input id="audioInput" type="file" webkitdirectory mozdirectory />
-		<audio controls id="aud" autoplay></audio>
-	
-		<button id="next">Next</button>
+	<div class="player-container">
+		<div class="player-header">
+			<div>
+				<input id="audioInput" type="file" style="display: none;"  webkitdirectory mozdirectory  />
+				<button class="upload" type="button" value="⤒" onclick="document.getElementById('audioInput').click();">
+					<span class="material-icons">
+						cloud_upload
+					</span>
+				</button>
+			</div>
+			<div id="status">Upload song</div>
+			<div class="history">
+				<span class="material-icons">
+					history
+				</span>
+			</div>
+		</div>
+
+		<div class="player">
+			<audio controls id="aud" autoplay></audio>
+		</div>
+		
+		<div class="player-controls">
+			<button class="control">
+				<span class="material-icons">
+					skip_previous
+				</span>
+			</button>
+
+			<div class="play-toggle">
+				<button class="control" id="play">
+					<span class="material-icons">
+						play_arrow
+					</span>
+				</button>
+				
+				<button class="control" id="pause">
+					<span class="material-icons">
+						pause
+					</span>	
+				</button>
+				
+			</div>
+
+			<button class="control" id="next">
+				<span class="material-icons">
+					skip_next
+				</span>
+			</button>
+		
+		</div>
+		<div class="logs"></div>
 	</div>
-	<div class="logs"></div>
 </body>
 </html>

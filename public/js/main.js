@@ -23,6 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	audio.addEventListener('ended', playRandomSong);
 	document.getElementById('next').addEventListener('click', playRandomSong);
+
+	const playButton = document.getElementById('play');
+	const pauseButton = document.getElementById('pause');
+	const status = document.getElementById('status');
+
+	playButton.addEventListener('click', resumeMusic);
+	pauseButton.addEventListener('click', pauseMusic);
 	
 	const audioPromise = new Promise((res, rej) => {
 		audioInput.addEventListener('change', (e) => {
@@ -83,6 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 	
 	function playRandomSong() {
+		playButton.style.display = 'none';
+		pause.style.display = 'block';
+		status.innerHTML = 'Playing'
+
 		const random = Math.floor(Math.random() * audios.length);
 		if (!hasScrobbled) {
 			setInterval(() => {
@@ -98,10 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	function pauseMusic(){
 		audio.pause();
+		playButton.style.display = 'block'
+		pause.style.display = 'none'
+		status.innerHTML = 'Paused'
 	}
 
 	function resumeMusic(){
 		audio.play();
+		playButton.style.display = 'none';
+		pause.style.display = 'block';
+		status.innerHTML = 'Playing'
 	}
 
 	function scrobbles() {
