@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
 					navigator.mediaSession.metadata = new MediaMetadata(songDetails);
 				}
 				
-				currentSong = {"artist": data.artist, "title": data.title}				
+				currentSong = {"artist": data.artist, "title": data.title}
+				status.innerHTML = `Playing | ${currentSong.artist} - ${currentSong.title}`;
 			})
 			.catch(err => {
 				console.log(err)
@@ -111,14 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
 		audio.pause();
 		playButton.style.display = 'block'
 		pause.style.display = 'none'
-		status.innerHTML = 'Paused'
+		status.innerHTML = `Paused | ${currentSong.artist} - ${currentSong.title}`
 	}
 
 	function resumeMusic(){
 		audio.play();
 		playButton.style.display = 'none';
 		pause.style.display = 'block';
-		status.innerHTML = 'Playing'
+		status.innerHTML = `Playing | ${currentSong.artist} - ${currentSong.title}`
 	}
 
 	function scrobbles() {
@@ -156,12 +157,19 @@ document.addEventListener('DOMContentLoaded', () => {
 		const artist = document.createElement('div')
 		
 		div.classList.add('log');
-		artist.innerHTML = `${date.getHours()}:${date.getMinutes()} | Scrobbled: ${currentSong.artist} - ${currentSong.title}`
+		artist.innerHTML = `${addZeroToTime(date.getHours())}:${addZeroToTime(date.getMinutes())} | Scrobbled: ${currentSong.artist} - ${currentSong.title}`
 		
 		div.appendChild(artist);
 		logs.appendChild(div);
 		
 		logs.scrollTop = logs.scrollHeight - logs.clientHeight;
+	}
+
+	function addZeroToTime(x) {
+		if (x < 10) {
+		  x = "0" + x;
+		}
+		return x;
 	}
 
 })
